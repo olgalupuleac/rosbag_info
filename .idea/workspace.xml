@@ -44,14 +44,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4dbc289-aa9e-4b99-af7f-6b36c12aa2a0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RosbagInfo.dir/src/RosbagInfo.cpp.o" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RosbagInfo.dir/src/main.cpp.o" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/devel/lib/mypakcage/RosbagInfo" afterPath="$PROJECT_DIR$/cmake-build-debug/devel/lib/mypakcage/RosbagInfo" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RosbagInfo.dir/CXX.includecache" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RosbagInfo.dir/CXX.includecache" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RosbagInfo.dir/depend.internal" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RosbagInfo.dir/depend.internal" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RosbagInfo.dir/depend.make" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RosbagInfo.dir/depend.make" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/RosbagInfo.h" afterPath="$PROJECT_DIR$/include/RosbagInfo.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/RosbagInfo.cpp" afterPath="$PROJECT_DIR$/src/RosbagInfo.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="$PROJECT_DIR$/src/main.cpp" />
@@ -77,22 +69,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RosbagInfo.h" pinned="false" current-in-tab="false">
+      <file leaf-file-name="RosbagInfo.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/include/RosbagInfo.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-180">
-              <caret line="99" column="75" lean-forward="true" selection-start-line="99" selection-start-column="62" selection-end-line="99" selection-end-column="75" />
+            <state relative-caret-position="320">
+              <caret line="79" column="1" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="79" selection-end-column="1" />
               <folding>
                 <element signature="e#1816#1842#0" expanded="true" />
                 <element signature="e#2187#2201#0" expanded="true" />
-                <element signature="e#4895#4904#0" expanded="true" />
-                <element signature="e#5669#5686#0" expanded="true" />
-                <element signature="e#6587#6599#0" expanded="true" />
-                <element signature="e#6730#6742#0" expanded="true" />
-                <element signature="e#9601#9613#0" expanded="true" />
-                <element signature="e#9731#9743#0" expanded="true" />
-                <element signature="e#10079#10096#0" expanded="true" />
-                <element signature="e#11022#11031#0" expanded="true" />
+                <element signature="e#5047#5056#0" expanded="true" />
+                <element signature="e#5821#5838#0" expanded="true" />
+                <element signature="e#6739#6751#0" expanded="true" />
+                <element signature="e#6882#6894#0" expanded="true" />
+                <element signature="e#9753#9765#0" expanded="true" />
+                <element signature="e#9883#9895#0" expanded="true" />
+                <element signature="e#10231#10248#0" expanded="true" />
+                <element signature="e#11174#11183#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -101,13 +93,13 @@
       <file leaf-file-name="RosbagInfo.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/RosbagInfo.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2152">
-              <caret line="186" column="0" lean-forward="true" selection-start-line="186" selection-start-column="0" selection-end-line="186" selection-end-column="0" />
+            <state relative-caret-position="3376">
+              <caret line="482" column="0" lean-forward="false" selection-start-line="482" selection-start-column="0" selection-end-line="482" selection-end-column="0" />
               <folding>
                 <element signature="e#1601#1624#0" expanded="true" />
                 <element signature="e#1736#1820#0" expanded="true" />
                 <element signature="e#1856#1875#0" expanded="true" />
-                <element signature="e#5515#5638#0" expanded="true" />
+                <element signature="e#5537#5660#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -143,11 +135,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1786">
-              <caret line="24" column="66" lean-forward="true" selection-start-line="24" selection-start-column="66" selection-end-line="24" selection-end-column="66" />
+            <state relative-caret-position="1319">
+              <caret line="122" column="0" lean-forward="false" selection-start-line="122" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -161,7 +153,6 @@
     <findStrings>
       <find>readConnect</find>
       <find>chunks_.push_back</find>
-      <find>readChunkHeader</find>
       <find>print</find>
       <find>readChunkH</find>
       <find>connection_indexes_</find>
@@ -172,8 +163,10 @@
       <find>topic_connection_ids_</find>
       <find>getSize</find>
       <find>Bag::readV</find>
-      <find>openRe</find>
       <find>Bag::openRe</find>
+      <find>readChunkHeader(chunk_header);</find>
+      <find>openRe</find>
+      <find>readChunkHeader</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -183,10 +176,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/get_yaml_info.txt" />
         <option value="$PROJECT_DIR$/include/RosbagInfo.h" />
         <option value="$PROJECT_DIR$/src/main.cpp" />
         <option value="$PROJECT_DIR$/src/RosbagInfo.cpp" />
-        <option value="$PROJECT_DIR$/src/get_yaml_info.txt" />
       </list>
     </option>
   </component>
@@ -610,12 +603,12 @@
       <workItem from="1494158457700" duration="55000" />
       <workItem from="1494158594593" duration="5993000" />
       <workItem from="1494177320183" duration="8727000" />
-      <workItem from="1494187551587" duration="21571000" />
+      <workItem from="1494187551587" duration="25507000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41789000" />
+    <option name="totallyTimeSpent" value="45725000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="27" width="1366" height="741" extended-state="6" />
@@ -627,7 +620,7 @@
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.354067" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.92134833" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -689,14 +682,14 @@
           <folding>
             <element signature="e#1816#1842#0" expanded="true" />
             <element signature="e#2187#2201#0" expanded="true" />
-            <element signature="e#4895#4904#0" expanded="true" />
-            <element signature="e#5669#5686#0" expanded="true" />
-            <element signature="e#6587#6599#0" expanded="true" />
-            <element signature="e#6730#6742#0" expanded="true" />
-            <element signature="e#9601#9613#0" expanded="true" />
-            <element signature="e#9731#9743#0" expanded="true" />
-            <element signature="e#10079#10096#0" expanded="true" />
-            <element signature="e#11022#11031#0" expanded="true" />
+            <element signature="e#5047#5056#0" expanded="true" />
+            <element signature="e#5821#5838#0" expanded="true" />
+            <element signature="e#6739#6751#0" expanded="true" />
+            <element signature="e#6882#6894#0" expanded="true" />
+            <element signature="e#9753#9765#0" expanded="true" />
+            <element signature="e#9883#9895#0" expanded="true" />
+            <element signature="e#10231#10248#0" expanded="true" />
+            <element signature="e#11174#11183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -727,7 +720,7 @@
             <element signature="e#1601#1624#0" expanded="true" />
             <element signature="e#1736#1820#0" expanded="true" />
             <element signature="e#1856#1875#0" expanded="true" />
-            <element signature="e#5515#5638#0" expanded="true" />
+            <element signature="e#5537#5660#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -747,14 +740,14 @@
           <folding>
             <element signature="e#1816#1842#0" expanded="true" />
             <element signature="e#2187#2201#0" expanded="true" />
-            <element signature="e#4895#4904#0" expanded="true" />
-            <element signature="e#5669#5686#0" expanded="true" />
-            <element signature="e#6587#6599#0" expanded="true" />
-            <element signature="e#6730#6742#0" expanded="true" />
-            <element signature="e#9601#9613#0" expanded="true" />
-            <element signature="e#9731#9743#0" expanded="true" />
-            <element signature="e#10079#10096#0" expanded="true" />
-            <element signature="e#11022#11031#0" expanded="true" />
+            <element signature="e#5047#5056#0" expanded="true" />
+            <element signature="e#5821#5838#0" expanded="true" />
+            <element signature="e#6739#6751#0" expanded="true" />
+            <element signature="e#6882#6894#0" expanded="true" />
+            <element signature="e#9753#9765#0" expanded="true" />
+            <element signature="e#9883#9895#0" expanded="true" />
+            <element signature="e#10231#10248#0" expanded="true" />
+            <element signature="e#11174#11183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -767,7 +760,7 @@
             <element signature="e#1601#1624#0" expanded="true" />
             <element signature="e#1736#1820#0" expanded="true" />
             <element signature="e#1856#1875#0" expanded="true" />
-            <element signature="e#5515#5638#0" expanded="true" />
+            <element signature="e#5537#5660#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -806,7 +799,7 @@
             <element signature="e#1601#1624#0" expanded="true" />
             <element signature="e#1736#1820#0" expanded="true" />
             <element signature="e#1856#1875#0" expanded="true" />
-            <element signature="e#5515#5638#0" expanded="true" />
+            <element signature="e#5537#5660#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -836,14 +829,14 @@
           <folding>
             <element signature="e#1816#1842#0" expanded="true" />
             <element signature="e#2187#2201#0" expanded="true" />
-            <element signature="e#4895#4904#0" expanded="true" />
-            <element signature="e#5669#5686#0" expanded="true" />
-            <element signature="e#6587#6599#0" expanded="true" />
-            <element signature="e#6730#6742#0" expanded="true" />
-            <element signature="e#9601#9613#0" expanded="true" />
-            <element signature="e#9731#9743#0" expanded="true" />
-            <element signature="e#10079#10096#0" expanded="true" />
-            <element signature="e#11022#11031#0" expanded="true" />
+            <element signature="e#5047#5056#0" expanded="true" />
+            <element signature="e#5821#5838#0" expanded="true" />
+            <element signature="e#6739#6751#0" expanded="true" />
+            <element signature="e#6882#6894#0" expanded="true" />
+            <element signature="e#9753#9765#0" expanded="true" />
+            <element signature="e#9883#9895#0" expanded="true" />
+            <element signature="e#10231#10248#0" expanded="true" />
+            <element signature="e#11174#11183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -864,7 +857,7 @@
             <element signature="e#1601#1624#0" expanded="true" />
             <element signature="e#1736#1820#0" expanded="true" />
             <element signature="e#1856#1875#0" expanded="true" />
-            <element signature="e#5515#5638#0" expanded="true" />
+            <element signature="e#5537#5660#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -894,14 +887,14 @@
           <folding>
             <element signature="e#1816#1842#0" expanded="true" />
             <element signature="e#2187#2201#0" expanded="true" />
-            <element signature="e#4895#4904#0" expanded="true" />
-            <element signature="e#5669#5686#0" expanded="true" />
-            <element signature="e#6587#6599#0" expanded="true" />
-            <element signature="e#6730#6742#0" expanded="true" />
-            <element signature="e#9601#9613#0" expanded="true" />
-            <element signature="e#9731#9743#0" expanded="true" />
-            <element signature="e#10079#10096#0" expanded="true" />
-            <element signature="e#11022#11031#0" expanded="true" />
+            <element signature="e#5047#5056#0" expanded="true" />
+            <element signature="e#5821#5838#0" expanded="true" />
+            <element signature="e#6739#6751#0" expanded="true" />
+            <element signature="e#6882#6894#0" expanded="true" />
+            <element signature="e#9753#9765#0" expanded="true" />
+            <element signature="e#9883#9895#0" expanded="true" />
+            <element signature="e#10231#10248#0" expanded="true" />
+            <element signature="e#11174#11183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -921,14 +914,14 @@
           <folding>
             <element signature="e#1816#1842#0" expanded="true" />
             <element signature="e#2187#2201#0" expanded="true" />
-            <element signature="e#4895#4904#0" expanded="true" />
-            <element signature="e#5669#5686#0" expanded="true" />
-            <element signature="e#6587#6599#0" expanded="true" />
-            <element signature="e#6730#6742#0" expanded="true" />
-            <element signature="e#9601#9613#0" expanded="true" />
-            <element signature="e#9731#9743#0" expanded="true" />
-            <element signature="e#10079#10096#0" expanded="true" />
-            <element signature="e#11022#11031#0" expanded="true" />
+            <element signature="e#5047#5056#0" expanded="true" />
+            <element signature="e#5821#5838#0" expanded="true" />
+            <element signature="e#6739#6751#0" expanded="true" />
+            <element signature="e#6882#6894#0" expanded="true" />
+            <element signature="e#9753#9765#0" expanded="true" />
+            <element signature="e#9883#9895#0" expanded="true" />
+            <element signature="e#10231#10248#0" expanded="true" />
+            <element signature="e#11174#11183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -941,7 +934,7 @@
             <element signature="e#1601#1624#0" expanded="true" />
             <element signature="e#1736#1820#0" expanded="true" />
             <element signature="e#1856#1875#0" expanded="true" />
-            <element signature="e#5515#5638#0" expanded="true" />
+            <element signature="e#5537#5660#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -998,14 +991,14 @@
           <folding>
             <element signature="e#1816#1842#0" expanded="true" />
             <element signature="e#2187#2201#0" expanded="true" />
-            <element signature="e#4895#4904#0" expanded="true" />
-            <element signature="e#5669#5686#0" expanded="true" />
-            <element signature="e#6587#6599#0" expanded="true" />
-            <element signature="e#6730#6742#0" expanded="true" />
-            <element signature="e#9601#9613#0" expanded="true" />
-            <element signature="e#9731#9743#0" expanded="true" />
-            <element signature="e#10079#10096#0" expanded="true" />
-            <element signature="e#11022#11031#0" expanded="true" />
+            <element signature="e#5047#5056#0" expanded="true" />
+            <element signature="e#5821#5838#0" expanded="true" />
+            <element signature="e#6739#6751#0" expanded="true" />
+            <element signature="e#6882#6894#0" expanded="true" />
+            <element signature="e#9753#9765#0" expanded="true" />
+            <element signature="e#9883#9895#0" expanded="true" />
+            <element signature="e#10231#10248#0" expanded="true" />
+            <element signature="e#11174#11183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1018,7 +1011,7 @@
             <element signature="e#1601#1624#0" expanded="true" />
             <element signature="e#1736#1820#0" expanded="true" />
             <element signature="e#1856#1875#0" expanded="true" />
-            <element signature="e#5515#5638#0" expanded="true" />
+            <element signature="e#5537#5660#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1038,14 +1031,14 @@
           <folding>
             <element signature="e#1816#1842#0" expanded="true" />
             <element signature="e#2187#2201#0" expanded="true" />
-            <element signature="e#4895#4904#0" expanded="true" />
-            <element signature="e#5669#5686#0" expanded="true" />
-            <element signature="e#6587#6599#0" expanded="true" />
-            <element signature="e#6730#6742#0" expanded="true" />
-            <element signature="e#9601#9613#0" expanded="true" />
-            <element signature="e#9731#9743#0" expanded="true" />
-            <element signature="e#10079#10096#0" expanded="true" />
-            <element signature="e#11022#11031#0" expanded="true" />
+            <element signature="e#5047#5056#0" expanded="true" />
+            <element signature="e#5821#5838#0" expanded="true" />
+            <element signature="e#6739#6751#0" expanded="true" />
+            <element signature="e#6882#6894#0" expanded="true" />
+            <element signature="e#9753#9765#0" expanded="true" />
+            <element signature="e#9883#9895#0" expanded="true" />
+            <element signature="e#10231#10248#0" expanded="true" />
+            <element signature="e#11174#11183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1076,7 +1069,7 @@
             <element signature="e#1601#1624#0" expanded="true" />
             <element signature="e#1736#1820#0" expanded="true" />
             <element signature="e#1856#1875#0" expanded="true" />
-            <element signature="e#5515#5638#0" expanded="true" />
+            <element signature="e#5537#5660#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1087,25 +1080,6 @@
         <state relative-caret-position="0">
           <caret line="188" column="18" lean-forward="false" selection-start-line="188" selection-start-column="18" selection-end-line="188" selection-end-column="18" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/RosbagInfo.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-180">
-          <caret line="99" column="75" lean-forward="true" selection-start-line="99" selection-start-column="62" selection-end-line="99" selection-end-column="75" />
-          <folding>
-            <element signature="e#1816#1842#0" expanded="true" />
-            <element signature="e#2187#2201#0" expanded="true" />
-            <element signature="e#4895#4904#0" expanded="true" />
-            <element signature="e#5669#5686#0" expanded="true" />
-            <element signature="e#6587#6599#0" expanded="true" />
-            <element signature="e#6730#6742#0" expanded="true" />
-            <element signature="e#9601#9613#0" expanded="true" />
-            <element signature="e#9731#9743#0" expanded="true" />
-            <element signature="e#10079#10096#0" expanded="true" />
-            <element signature="e#11022#11031#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1125,19 +1099,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/RosbagInfo.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2152">
-          <caret line="186" column="0" lean-forward="true" selection-start-line="186" selection-start-column="0" selection-end-line="186" selection-end-column="0" />
-          <folding>
-            <element signature="e#1601#1624#0" expanded="true" />
-            <element signature="e#1736#1820#0" expanded="true" />
-            <element signature="e#1856#1875#0" expanded="true" />
-            <element signature="e#5515#5638#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/get_yaml_info.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1814">
@@ -1148,10 +1109,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1786">
-          <caret line="24" column="66" lean-forward="true" selection-start-line="24" selection-start-column="66" selection-end-line="24" selection-end-column="66" />
+        <state relative-caret-position="1319">
+          <caret line="122" column="0" lean-forward="false" selection-start-line="122" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/RosbagInfo.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3376">
+          <caret line="482" column="0" lean-forward="false" selection-start-line="482" selection-start-column="0" selection-end-line="482" selection-end-column="0" />
+          <folding>
+            <element signature="e#1601#1624#0" expanded="true" />
+            <element signature="e#1736#1820#0" expanded="true" />
+            <element signature="e#1856#1875#0" expanded="true" />
+            <element signature="e#5537#5660#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/RosbagInfo.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="79" column="1" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="79" selection-end-column="1" />
+          <folding>
+            <element signature="e#1816#1842#0" expanded="true" />
+            <element signature="e#2187#2201#0" expanded="true" />
+            <element signature="e#5047#5056#0" expanded="true" />
+            <element signature="e#5821#5838#0" expanded="true" />
+            <element signature="e#6739#6751#0" expanded="true" />
+            <element signature="e#6882#6894#0" expanded="true" />
+            <element signature="e#9753#9765#0" expanded="true" />
+            <element signature="e#9883#9895#0" expanded="true" />
+            <element signature="e#10231#10248#0" expanded="true" />
+            <element signature="e#11174#11183#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -77,6 +77,8 @@ iomanip
 -
 boost/foreach.hpp
 -
+algorithm
+-
 console_bridge/console.h
 /home/olga/ros_comm/tools/rosbag/src/catkin_ws/src/mypakcage/src/console_bridge/console.h
 

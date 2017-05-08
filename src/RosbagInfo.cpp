@@ -41,6 +41,8 @@
 
 #include <boost/foreach.hpp>
 
+#include <algorithm>
+
 #include "console_bridge/console.h"
 
 #define foreach BOOST_FOREACH
@@ -310,6 +312,7 @@ namespace rosbag {
         for (uint32_t i = 0; i < chunk_count_; i++)
             readChunkInfoRecord();
 
+        std::sort(chunks_.begin(), chunks_.end(), ChunkInfoComparator());
         // Read the connection indexes for each chunk
                 foreach(ChunkInfo const& chunk_info, chunks_) {
                         curr_chunk_info_ = chunk_info;
@@ -478,12 +481,6 @@ namespace rosbag {
             Time time(sec, nsec);
             index_entry.time = time;
 
-            //updating start and end time if necessary
-
-            if(time < start_time_)
-                start_time_ = time;
-            if(time > end_time_)
-                end_time_ = time;
 
             index_entry.offset = 0;
 

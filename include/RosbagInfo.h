@@ -65,6 +65,7 @@
 
 #include "console_bridge/console.h"
 
+
 namespace rosbag {
 
 namespace bagmode
@@ -89,6 +90,12 @@ class ROSBAG_DECL Bag
     friend class View;
 public:
     Bag();
+    struct ChunkInfoComparator{
+        bool operator()(const ChunkInfo& lhs, ChunkInfo& rhs){
+            return lhs.pos < rhs.pos;
+        }
+    };
+
 
     //! Open a bag file
     /*!

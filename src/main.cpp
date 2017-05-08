@@ -10,7 +10,7 @@ void get_time_difference(clock_t& begin){
 
 int main(){
     clock_t begin_time = clock();
-    rosbag::Bag bag1("//home/olga/Загрузки/2011-03-16-06-19-11.bag", rosbag::bagmode::Read, 0);
+    rosbag::Bag bag1("/home/olga/Загрузки/2012-05-03-13-33-14.bag", rosbag::bagmode::Read, 0);
     bag1.printInfo(std::cout, "path");
     std::cout << "\n";
     get_time_difference(begin_time);
@@ -22,7 +22,7 @@ int main(){
     bag1.printInfo(std::cout, "version");
     std::cout << "\n";
     get_time_difference(begin_time);
-    rosbag::Bag bag("//home/olga/Загрузки/2011-03-16-06-19-11.bag");
+    rosbag::Bag bag("/home/olga/Загрузки/2012-05-03-13-33-14.bag");
     bag.printInfo(std::cout, "start");
     std::cout << "\n";
     get_time_difference(begin_time);
@@ -48,10 +48,18 @@ int main(){
     get_time_difference(begin_time);
     return 0;
 }
-/*1295878707.865144
-end: 1295878932.387626
-
-  type: geometry_msgs/PoseWithCovarianceStamped
+/*
+ path: /home/olga/Загрузки/2012-05-03-13-33-14.bag
+version: 2.0
+duration: 1264.804456
+start: 1336077194.586362
+end: 1336078459.390818
+size: 23727983109
+messages: 608541
+indexed: True
+compression: none
+types:
+    - type: geometry_msgs/PoseWithCovarianceStamped
       md5: 953b798c0f514ff060a53a3498ce6246
     - type: nav_msgs/Odometry
       md5: cd5e73d190d741a2f92e81eda573aca7
@@ -74,83 +82,45 @@ end: 1295878932.387626
 topics:
     - topic: /base_odometry/odom
       type: nav_msgs/Odometry
-      messages: 21032
+      messages: 116327
     - topic: /base_odometry/odometer
       type: pr2_mechanism_controllers/Odometer
-      messages: 224
+      messages: 1264
     - topic: /base_odometry/state
       type: pr2_mechanism_controllers/BaseOdometryState
-      messages: 224
+      messages: 1264
     - topic: /base_scan
       type: sensor_msgs/LaserScan
-      messages: 4489
+      messages: 25171
     - topic: /robot_pose_ekf/odom_combined
       type: geometry_msgs/PoseWithCovarianceStamped
-      messages: 6333
+      messages: 34353
     - topic: /tf
       type: tf/tfMessage
-      messages: 12687
+      messages: 129943
+      connections: 2
     - topic: /tilt_scan
       type: sensor_msgs/LaserScan
-      messages: 4489
+      messages: 25293
     - topic: /torso_lift_imu/data
       type: sensor_msgs/Imu
-      messages: 22451
+      messages: 126487
     - topic: /torso_lift_imu/is_calibrated
       type: std_msgs/Bool
       messages: 1
-    - topic: /wide_stereo/left/camera_info_throttle
+    - topic: /wide_stereo/left/camera_info
       type: sensor_msgs/CameraInfo
-      messages: 220
-    - topic: /wide_stereo/left/image_rect_throttle
+      messages: 37109
+    - topic: /wide_stereo/left/image_raw
       type: sensor_msgs/Image
-      messages: 220
-    - topic: /wide_stereo/right/camera_info_throttle
+      messages: 37109
+    - topic: /wide_stereo/right/camera_info
       type: sensor_msgs/CameraInfo
-      messages: 220
-    - topic: /wide_stereo/right/image_rect_throttle
+      messages: 37110
+    - topic: /wide_stereo/right/image_raw
       type: sensor_msgs/Image
-      messages: 220
+      messages: 37110
 
-      /tf
-tf/tfMessage
-12687
-/tilt_scan
-sensor_msgs/LaserScan
-4489
-/base_odometry/odom
-nav_msgs/Odometry
-21032
-/robot_pose_ekf/odom_combined
-geometry_msgs/PoseWithCovarianceStamped
-6333
-/base_scan
-sensor_msgs/LaserScan
-4489
-/torso_lift_imu/is_calibrated
-std_msgs/Bool
-1
-/torso_lift_imu/data
-sensor_msgs/Imu
-22451
-/wide_stereo/right/image_rect_throttle
-sensor_msgs/Image
-220
-/wide_stereo/left/image_rect_throttle
-sensor_msgs/Image
-220
-/wide_stereo/left/camera_info_throttle
-sensor_msgs/CameraInfo
-220
-/wide_stereo/right/camera_info_throttle
-sensor_msgs/CameraInfo
-220
-/base_odometry/odometer
-pr2_mechanism_controllers/Odometer
-224
-/base_odometry/state
-pr2_mechanism_controllers/BaseOdometryState
-224
 
 
 */
