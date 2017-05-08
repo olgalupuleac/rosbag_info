@@ -1,30 +1,51 @@
 #include <iostream>
-#include "rosbag/bag.h"
-#include "rosbag/view.h"
+#include "ctime"
+#include "RosbagInfo.h"
 
-class BagInfo{
-private:
-    rosbag::Bag bag_;
-    rosbag::View view_;
-    ros::Time start_time_;
-    ros::Time end_time_;
-    ros::Time duration_;
-    std::string filename_;
+void get_time_difference(clock_t& begin){
+    std::cout << float(clock() - begin) /CLOCKS_PER_SEC << "\n";
+    begin = clock();
+}
 
-
-};
 
 int main(){
-    rosbag::Bag bag("/home/olga/ros_comm/tools/rosbag/example.bag");
-    std::cout << bag.getFileName() << " " << bag.getMajorVersion() << "." <<
-              bag.getMinorVersion() << " " << bag.getCompression() << " " << bag.getSize()  << "\n";
-    rosbag::View view(bag);
-    std::cout << view.getBeginTime() << " " << view.getEndTime() << " " << view.getEndTime() - view.getBeginTime() << "\n";
-    const auto& connections = view.getConnections();
-    for(const auto& connection : connections){
-        std::cout << /*connection->id << " " <<*/ connection->topic << " " <<
-                  connection->datatype << " " << connection->md5sum << /*" " << connection->msg_def << */"\n";
-    }
+    clock_t begin_time = clock();
+    rosbag::Bag bag1("//home/olga/Загрузки/2011-03-16-06-19-11.bag", rosbag::bagmode::Read, 0);
+    bag1.printInfo(std::cout, "path");
+    std::cout << "\n";
+    get_time_difference(begin_time);
+
+    bag1.printInfo(std::cout, "size");
+    std::cout << "\n";
+    get_time_difference(begin_time);
+
+    bag1.printInfo(std::cout, "version");
+    std::cout << "\n";
+    get_time_difference(begin_time);
+    rosbag::Bag bag("//home/olga/Загрузки/2011-03-16-06-19-11.bag");
+    bag.printInfo(std::cout, "start");
+    std::cout << "\n";
+    get_time_difference(begin_time);
+    bag.printInfo(std::cout, "end");
+    std::cout << "\n";
+    get_time_difference(begin_time);
+    bag.printInfo(std::cout, "duration");
+    std::cout << "\n";
+    get_time_difference(begin_time);
+    bag.printInfo(std::cout, "compression");
+    std::cout << "\n";
+    get_time_difference(begin_time);
+    bag.printInfo(std::cout, "indexed");
+    std::cout << "\n";
+    get_time_difference(begin_time);
+    bag.printInfo(std::cout, "messages");
+    std::cout << "\n";
+    get_time_difference(begin_time);
+    bag.printInfo(std::cout, "topics");
+    std::cout << "\n";
+    get_time_difference(begin_time);
+    bag.printInfo(std::cout, "types");
+    get_time_difference(begin_time);
     return 0;
 }
 /*1295878707.865144
@@ -90,5 +111,46 @@ topics:
     - topic: /wide_stereo/right/image_rect_throttle
       type: sensor_msgs/Image
       messages: 220
+
+      /tf
+tf/tfMessage
+12687
+/tilt_scan
+sensor_msgs/LaserScan
+4489
+/base_odometry/odom
+nav_msgs/Odometry
+21032
+/robot_pose_ekf/odom_combined
+geometry_msgs/PoseWithCovarianceStamped
+6333
+/base_scan
+sensor_msgs/LaserScan
+4489
+/torso_lift_imu/is_calibrated
+std_msgs/Bool
+1
+/torso_lift_imu/data
+sensor_msgs/Imu
+22451
+/wide_stereo/right/image_rect_throttle
+sensor_msgs/Image
+220
+/wide_stereo/left/image_rect_throttle
+sensor_msgs/Image
+220
+/wide_stereo/left/camera_info_throttle
+sensor_msgs/CameraInfo
+220
+/wide_stereo/right/camera_info_throttle
+sensor_msgs/CameraInfo
+220
+/base_odometry/odometer
+pr2_mechanism_controllers/Odometer
+224
+/base_odometry/state
+pr2_mechanism_controllers/BaseOdometryState
+224
+
 
 */

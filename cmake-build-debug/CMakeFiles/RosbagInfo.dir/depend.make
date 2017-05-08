@@ -35,6 +35,7 @@ CMakeFiles/RosbagInfo.dir/src/RosbagInfo.cpp.o: /opt/ros/kinetic/include/rosbag/
 CMakeFiles/RosbagInfo.dir/src/RosbagInfo.cpp.o: /opt/ros/kinetic/include/rosbag/view.h
 CMakeFiles/RosbagInfo.dir/src/RosbagInfo.cpp.o: /opt/ros/kinetic/include/roslz4/lz4s.h
 
+CMakeFiles/RosbagInfo.dir/src/main.cpp.o: .././include/RosbagInfo.h
 CMakeFiles/RosbagInfo.dir/src/main.cpp.o: ../src/main.cpp
 CMakeFiles/RosbagInfo.dir/src/main.cpp.o: /opt/ros/kinetic/include/ros/builtin_message_traits.h
 CMakeFiles/RosbagInfo.dir/src/main.cpp.o: /opt/ros/kinetic/include/ros/cpp_common_decl.h
@@ -60,9 +61,7 @@ CMakeFiles/RosbagInfo.dir/src/main.cpp.o: /opt/ros/kinetic/include/rosbag/consta
 CMakeFiles/RosbagInfo.dir/src/main.cpp.o: /opt/ros/kinetic/include/rosbag/exceptions.h
 CMakeFiles/RosbagInfo.dir/src/main.cpp.o: /opt/ros/kinetic/include/rosbag/macros.h
 CMakeFiles/RosbagInfo.dir/src/main.cpp.o: /opt/ros/kinetic/include/rosbag/message_instance.h
-CMakeFiles/RosbagInfo.dir/src/main.cpp.o: /opt/ros/kinetic/include/rosbag/query.h
 CMakeFiles/RosbagInfo.dir/src/main.cpp.o: /opt/ros/kinetic/include/rosbag/stream.h
 CMakeFiles/RosbagInfo.dir/src/main.cpp.o: /opt/ros/kinetic/include/rosbag/structures.h
-CMakeFiles/RosbagInfo.dir/src/main.cpp.o: /opt/ros/kinetic/include/rosbag/view.h
 CMakeFiles/RosbagInfo.dir/src/main.cpp.o: /opt/ros/kinetic/include/roslz4/lz4s.h
 

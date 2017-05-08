@@ -45,6 +45,7 @@
 
 #define foreach BOOST_FOREACH
 
+
 using std::map;
 using std::priority_queue;
 using std::string;
@@ -74,11 +75,11 @@ namespace rosbag {
             decompressed_chunk_(0),
             start_time_(0),
             end_time_(0),
-            duration_(0)
+            read_all_file_(0)
     {
     }
 
-    Bag::Bag(string const& filename, uint32_t mode) :
+    Bag::Bag(string const& filename, uint32_t mode, bool read_all) :
             compression_(compression::Uncompressed),
             chunk_threshold_(768 * 1024),  // 768KB chunks
             bag_revision_(0),
@@ -93,7 +94,7 @@ namespace rosbag {
             decompressed_chunk_(0),
             start_time_(ros::TIME_MAX),
             end_time_(ros::TIME_MIN),
-            duration_(0)
+            read_all_file_(read_all)
     {
         open(filename, mode);
     }
@@ -105,11 +106,7 @@ namespace rosbag {
     void Bag::open(string const& filename, uint32_t mode) {
         mode_ = (BagMode) mode;
 
-        if (mode_ & bagmode::Append)
-            openAppend(filename);
-        else if (mode_ & bagmode::Write)
-            openWrite(filename);
-        else if (mode_ & bagmode::Read)
+        if (mode_ & bagmode::Read)
             openRead(filename);
         else
             throw BagException((format("Unknown mode: %1%") % (int) mode).str());
@@ -125,12 +122,13 @@ namespace rosbag {
         file_.openRead(filename);
 
         readVersion();
-
-        switch (version_) {
-            case 102: startReadingVersion102(); break;
-            case 200: startReadingVersion200(); break;
-            default:
-                throw BagException((format("Unsupported bag file version: %1%.%2%") % getMajorVersion() % getMinorVersion()).str());
+        if(read_all_file_){
+            switch (version_) {
+                case 102: startReadingVersion102(); break;
+                case 200: startReadingVersion200(); break;
+                default:
+                    throw BagException((format("Unsupported bag file version: %1%.%2%") % getMajorVersion() % getMinorVersion()).str());
+            }
         }
     }
 
@@ -139,8 +137,6 @@ namespace rosbag {
         if (!file_.isOpen())
             return;
 
-        if (mode_ & bagmode::Write || mode_ & bagmode::Append)
-            closeWrite();
 
         file_.close();
 
@@ -192,25 +188,108 @@ namespace rosbag {
     uint32_t Bag::getMajorVersion() const { return version_ / 100; }
     uint32_t Bag::getMinorVersion() const { return version_ % 100; }
 
-    const std::string Bag::getInfo(const std::string &key) const {
-        if(key == "path"){
-            return getFileName();
-        }
+    void Bag::printInfo(std::ostream& os, const std::string& key) {
         if(key == "size"){
-            return std::to_string(getSize());
+            os << getSize() << "\n";
         }
         if(key == "version"){
-            return std::to_string(getMajorVersion()) + "."
-                   + std::to_string(getMinorVersion());
+            //readVersion();
+            os << getMajorVersion() << "." <<getMinorVersion() << "\n";
         }
         if(key == "start"){
-            for(const std::pair<uint32_t, ConnectionInfo*>& conn : connections_){
-                ConnectionInfo const* connection = conn.second;
-                map<uint32_t, multiset<IndexEntry> >::const_iterator j = connection_indexes_.find(connection->id);
-
-
+            os << start_time_ << "\n";
+        }
+        if(key == "end"){
+            os << end_time_ << "\n";
+        }
+        if(key == "duration"){
+            os << end_time_ - start_time_ << "\n";
+        }
+        if(key == "compression") {
+            uint32_t main_compression_count = 0;
+            std::string main_compression_type;
+            uint32_t compressed = 0;
+            uint32_t uncompressed = 0;
+            for(const auto& compression_type : compression_type_count_){
+                if(compression_type.second > main_compression_count){
+                    main_compression_count = compression_type.second;
+                    main_compression_type = compression_type.first;
+                }
+                if(compression_type.first == COMPRESSION_NONE)
+                    uncompressed++;
+                else
+                    compressed++;
+            }
+            os << main_compression_type << "\n";
+            if(compressed){
+                os << "uncompressed: " << uncompressed << "\n" <<
+                   "compressed: " << compressed << "\n";
             }
         }
+        if(key == "indexed"){
+            if(chunks_.size() || connection_indexes_.size())
+                os << "True";
+            else
+                os << "False";
+            os << "\n";
+        }
+        if(key == "messages"){
+            /*                if self._chunks:
+                    num_messages = 0
+                    for c in self._chunks:
+                        for counts in c.connection_counts.values():
+                            num_messages += counts
+                else:
+                    num_messages = sum([len(index) for index in self._connection_indexes.values()])*/
+            uint64_t num_msg = 0;
+            if(chunks_.size())
+                for(const auto& chunk : chunks_)
+                    for(const auto& count : chunk.connection_counts)
+                        num_msg += count.second;
+            else
+                for(const auto& index : connection_indexes_)
+                    num_msg += index.second.size();
+            os << num_msg << "\n";
+        }
+        if(key == "topics") {
+            os << "\n";
+            for (const auto &connection : connections_) {
+                ConnectionInfo *connection_info = connection.second;
+                os << "-topic: " << connection_info->topic << "\n";
+                os << "type: " << connection_info->datatype << "\n";
+                uint64_t msg_count = 0;
+                for (const auto &chunk : chunks_) {
+                    auto it = chunk.connection_counts.find(connection_info->id);
+                    if (it != chunk.connection_counts.end())
+                        msg_count += it->second;
+                }
+                os << "messages: " << msg_count << "\n";
+            }
+        }
+        if(key == "types"){
+            os << "\n";
+            for(const auto& connection : connections_){
+                ConnectionInfo* connection_info = connection.second;
+                os << "-type: " << connection_info->datatype << "\n";
+                os << "md5: " << connection_info->md5sum << "\n";
+            }
+        }
+
+/*ConnectionInfo* connection_info = new ConnectionInfo();
+            connection_info->id       = connection_id;
+            connection_info->topic    = topic;
+            connections_[connection_id] = connection_info;
+
+            topic_connection_ids_[topic] = connection_id;
+        }
+        else
+            connection_id = topic_conn_id_iter->second;
+
+        multiset<IndexEntry>& connection_index = connection_indexes_[connection_id];*/
+
+
+
+
 
     }
 
@@ -339,6 +418,9 @@ namespace rosbag {
         readField(fields, COMPRESSION_FIELD_NAME, true, chunk_header.compression);
         readField(fields, SIZE_FIELD_NAME,        true, &chunk_header.uncompressed_size);
 
+        compression_type_count_[chunk_header.compression]++;
+
+
         logDebug("Read CHUNK: compression=%s size=%d uncompressed=%d (%f)", chunk_header.compression.c_str(), chunk_header.compressed_size, chunk_header.uncompressed_size, 100 * ((double) chunk_header.compressed_size) / chunk_header.uncompressed_size);
     }
 
@@ -385,6 +467,7 @@ namespace rosbag {
 
         multiset<IndexEntry>& connection_index = connection_indexes_[connection_id];
 
+
         for (uint32_t i = 0; i < count; i++) {
             IndexEntry index_entry;
             uint32_t sec;
@@ -392,7 +475,16 @@ namespace rosbag {
             read((char*) &sec,                   4);
             read((char*) &nsec,                  4);
             read((char*) &index_entry.chunk_pos, 8);   //<! store position of the message in the chunk_pos field as it's 64 bits
-            index_entry.time = Time(sec, nsec);
+            Time time(sec, nsec);
+            index_entry.time = time;
+
+            //updating start and end time if necessary
+
+            if(time < start_time_)
+                start_time_ = time;
+            if(time > end_time_)
+                end_time_ = time;
+
             index_entry.offset = 0;
 
             logDebug("  - %d.%d: %llu", sec, nsec, (unsigned long long) index_entry.chunk_pos);
@@ -703,6 +795,10 @@ namespace rosbag {
                  (unsigned long long) chunk_info.pos, chunk_connection_count,
                  chunk_info.start_time.sec, chunk_info.start_time.nsec,
                  chunk_info.end_time.sec, chunk_info.end_time.nsec);
+        if(chunk_info.start_time < start_time_)
+            start_time_ = chunk_info.start_time;
+        if(chunk_info.end_time > end_time_)
+            end_time_ = chunk_info.end_time;
 
         // Read the topic count entries
         for (uint32_t i = 0; i < chunk_connection_count; i ++) {

@@ -31,13 +31,19 @@ ros/serialization.h
 .././include/ros/serialization.h
 ios
 -
+ostream
+-
 map
+-
+unordered_map
 -
 queue
 -
 set
 -
 stdexcept
+-
+unordered_set
 -
 boost/format.hpp
 -
@@ -77,10 +83,10 @@ console_bridge/console.h
 /home/olga/ros_comm/tools/rosbag/src/catkin_ws/src/mypakcage/src/main.cpp
 iostream
 -
-rosbag/bag.h
-/home/olga/ros_comm/tools/rosbag/src/catkin_ws/src/mypakcage/src/rosbag/bag.h
-rosbag/view.h
-/home/olga/ros_comm/tools/rosbag/src/catkin_ws/src/mypakcage/src/rosbag/view.h
+ctime
+/home/olga/ros_comm/tools/rosbag/src/catkin_ws/src/mypakcage/src/ctime
+RosbagInfo.h
+/home/olga/ros_comm/tools/rosbag/src/catkin_ws/src/mypakcage/src/RosbagInfo.h
 
 /opt/ros/kinetic/include/ros/builtin_message_traits.h
 message_traits.h
