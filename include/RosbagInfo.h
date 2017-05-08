@@ -68,17 +68,7 @@
 
 namespace rosbag {
 
-namespace bagmode
-{
-    //! The possible modes to open a bag in
-    enum BagMode
-    {
-        Write   = 1,
-        Read    = 2,
-        Append  = 4
-    };
-}
-typedef bagmode::BagMode BagMode;
+
 
 class MessageInstance;
 class View;
@@ -104,7 +94,7 @@ public:
      *
      * Can throw BagException
      */
-    explicit Bag(std::string const& filename, uint32_t mode = bagmode::Read, bool read_all_file = 1);
+    explicit Bag(std::string const& filename, bool read_all_file = 1);
 
     ~Bag();
 
@@ -115,13 +105,12 @@ public:
      *
      * Can throw BagException
      */
-    void open(std::string const& filename, uint32_t mode = bagmode::Read);
+
 
     //! Close the bag file
     void close();
 
     std::string     getFileName()     const;                      //!< Get the filename of the bag
-    BagMode         getMode()         const;                      //!< Get the mode the bag is in
     uint32_t        getMajorVersion() const;                      //!< Get the major-version of the open bag file
     uint32_t        getMinorVersion() const;                      //!< Get the minor-version of the open bag file
     uint64_t        getSize()         const;                      //!< Get the current size of the bag file (a lower bound)
@@ -214,7 +203,6 @@ private:
     void seek(uint64_t pos, int origin = std::ios_base::beg) const;
 
 private:
-    BagMode             mode_;
     mutable ChunkedFile file_;
     int                 version_;
     CompressionType     compression_;

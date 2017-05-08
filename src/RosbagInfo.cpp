@@ -61,7 +61,6 @@ using ros::Time;
 namespace rosbag {
 
     Bag::Bag() :
-            mode_(bagmode::Write),
             version_(0),
             compression_(compression::Uncompressed),
             chunk_threshold_(768 * 1024),  // 768KB chunks
@@ -81,7 +80,7 @@ namespace rosbag {
     {
     }
 
-    Bag::Bag(string const& filename, uint32_t mode, bool read_all) :
+    Bag::Bag(string const& filename, bool read_all) :
             compression_(compression::Uncompressed),
             chunk_threshold_(768 * 1024),  // 768KB chunks
             bag_revision_(0),
@@ -98,27 +97,14 @@ namespace rosbag {
             end_time_(ros::TIME_MIN),
             read_all_file_(read_all)
     {
-        open(filename, mode);
+        openRead(filename);
     }
 
     Bag::~Bag() {
         close();
     }
 
-    void Bag::open(string const& filename, uint32_t mode) {
-        mode_ = (BagMode) mode;
 
-        if (mode_ & bagmode::Read)
-            openRead(filename);
-        else
-            throw BagException((format("Unknown mode: %1%") % (int) mode).str());
-
-        // Determine file size
-        uint64_t offset = file_.getOffset();
-        seek(0, std::ios::end);
-        file_size_ = file_.getOffset();
-        seek(offset);
-    }
 
     void Bag::openRead(string const& filename) {
         file_.openRead(filename);
@@ -132,6 +118,10 @@ namespace rosbag {
                     throw BagException((format("Unsupported bag file version: %1%.%2%") % getMajorVersion() % getMinorVersion()).str());
             }
         }
+        uint64_t offset = file_.getOffset();
+        seek(0, std::ios::end);
+        file_size_ = file_.getOffset();
+        seek(offset);
     }
 
 
@@ -154,7 +144,6 @@ namespace rosbag {
 
 
     string   Bag::getFileName() const { return file_.getFileName(); }
-    BagMode  Bag::getMode()     const { return mode_;               }
     uint64_t Bag::getSize()     const { return file_size_;          }
 
     uint32_t Bag::getChunkThreshold() const { return chunk_threshold_; }
