@@ -1,6 +1,6 @@
 #include <iostream>
 #include "ctime"
-#include "RosbagInfo.h"
+#include "getYamlInfo.h"
 
 void get_time_difference(clock_t& begin){
     std::cout << float(clock() - begin) /CLOCKS_PER_SEC << "\n";
@@ -10,8 +10,8 @@ void get_time_difference(clock_t& begin){
 
 int main(){
     clock_t begin_time = clock();
-    rosbag::Bag bag1("/home/olga/Загрузки/2012-05-03-13-33-14.bag", rosbag::bagmode::Read, 0);
-    bag1.printInfo(std::cout, "path");
+    rosbag::BagInfo bag1("/home/olga/Загрузки/1gb.bag", rosbag::READ_CHUNKS);
+   /* bag1.printInfo(std::cout, "path");
     std::cout << "\n";
     get_time_difference(begin_time);
 
@@ -45,7 +45,7 @@ int main(){
     std::cout << "\n";
     get_time_difference(begin_time);
     bag.printInfo(std::cout, "types");
-    get_time_difference(begin_time);
+    get_time_difference(begin_time);*/
     return 0;
 }
 /*

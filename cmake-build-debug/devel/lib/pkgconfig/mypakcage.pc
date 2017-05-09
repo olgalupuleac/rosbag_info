@@ -1,8 +1,0 @@
-prefix=/home/olga/ros_comm/tools/rosbag/src/catkin_ws/src/mypakcage/cmake-build-debug/devel
-
-Name: mypakcage
-Description: Description of mypakcage
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/olga/ros_comm/tools/rosbag/src/catkin_ws/src/mypakcage/cmake-build-debug/devel/lib 
-Requires: 

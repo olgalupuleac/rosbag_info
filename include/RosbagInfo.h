@@ -32,8 +32,8 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
 
-#ifndef ROSBAG_BAG_H
-#define ROSBAG_BAG_H
+#ifndef ROSBAG_BAGINFO_H
+#define ROSBAG_BAGINFO_H
 
 #include "rosbag/macros.h"
 
@@ -48,6 +48,10 @@
 #include "ros/message_traits.h"
 #include "ros/message_event.h"
 #include "ros/serialization.h"
+
+#include "yaml-cpp/yaml.h"
+
+
 
 //#include "ros/subscription_callback_helper.h"
 
@@ -64,9 +68,24 @@
 #include <boost/iterator/iterator_facade.hpp>
 
 #include "console_bridge/console.h"
+#include "getYamlInfo.h"
+
 
 
 namespace rosbag {
+    enum ReadingMode {
+        READ_CHUNK_INFO,
+        READ_CHUNKS,
+        READ_VERSION
+    };
+
+
+    struct ChunkInfoComparator{
+        bool operator()(const ChunkInfo& lhs,
+                        const ChunkInfo& rhs){
+            return lhs.pos < rhs.pos;
+        }
+    };
 
 
 
@@ -74,37 +93,17 @@ class MessageInstance;
 class View;
 class Query;
 
-class ROSBAG_DECL Bag
+
+class  BagInfo
 {
     friend class MessageInstance;
     friend class View;
+    friend YAML::Emitter getYamlInfo(const std::string& filename, const std::string& key);
 public:
-    Bag();
-    struct ChunkInfoComparator{
-        bool operator()(const ChunkInfo& lhs, ChunkInfo& rhs){
-            return lhs.pos < rhs.pos;
-        }
-    };
 
+    explicit BagInfo(std::string const& filename, ReadingMode mode = READ_CHUNK_INFO);
 
-    //! Open a bag file
-    /*!
-     * \param filename The bag file to open
-     * \param mode     The mode to use (either read, write or append)
-     *
-     * Can throw BagException
-     */
-    explicit Bag(std::string const& filename, bool read_all_file = 1);
-
-    ~Bag();
-
-    //! Open a bag file.
-    /*!
-     * \param filename The bag file to open
-     * \param mode     The mode to use (either read, write or append)
-     *
-     * Can throw BagException
-     */
+    ~BagInfo();
 
 
     //! Close the bag file
@@ -113,29 +112,20 @@ public:
     std::string     getFileName()     const;                      //!< Get the filename of the bag
     uint32_t        getMajorVersion() const;                      //!< Get the major-version of the open bag file
     uint32_t        getMinorVersion() const;                      //!< Get the minor-version of the open bag file
-    uint64_t        getSize()         const;                      //!< Get the current size of the bag file (a lower bound)
 
     void            setCompression(CompressionType compression);  //!< Set the compression method to use for writing chunks
     CompressionType getCompression() const;                       //!< Get the compression method to use for writing chunks
     void            setChunkThreshold(uint32_t chunk_threshold);  //!< Set the threshold for creating new chunks
     uint32_t        getChunkThreshold() const;                    //!< Get the threshold for creating new chunks
-    void printInfo(std::ostream& os, const std::string& key);
+    std::string getInfo(const std::string& key);
 
-    //! Write a message into the bag file
-    /*!
-     * \param topic The topic name
-     * \param event The message event to be added
-     *
-     * Can throw BagIOException
-     */
+
 
 private:
     // This helper function actually does the write with an arbitrary serializable message
 
     void openRead  (std::string const& filename);
 
-
-    void closeWrite();
 
     template<class T>
     boost::shared_ptr<T> instantiateBuffer(IndexEntry const& index_entry) const;  //!< deserializes the message held in record_buffer_
@@ -214,7 +204,8 @@ private:
     uint64_t index_data_pos_;
     uint32_t connection_count_;
     uint32_t chunk_count_;
-    const bool read_all_file_;
+    ReadingMode mode_;
+
 
     mutable std::map<std::string, uint32_t> compression_type_count_;
     std::unordered_map<uint32_t, uint32_t> msg_count_;
@@ -225,7 +216,7 @@ private:
     uint64_t  curr_chunk_data_pos_;
 
     std::map<std::string, uint32_t>                topic_connection_ids_;
-    std::map<std::string, std::unordered_set<uint32_t> >  my_topic_connection_ids_;
+    //std::map<std::string, std::unordered_set<uint32_t> >  my_topic_connection_ids_;
     std::map<ros::M_string, uint32_t>              header_connection_ids_;
     std::map<uint32_t, ConnectionInfo*>            connections_;
 
@@ -234,8 +225,8 @@ private:
     std::map<uint32_t, std::multiset<IndexEntry> > connection_indexes_;
     std::map<uint32_t, std::multiset<IndexEntry> > curr_chunk_connection_indexes_;
 
-    ros::Time start_time_;
-    ros::Time end_time_;
+    //ros::Time start_time_;
+    //ros::Time end_time_;
 
     mutable Buffer   header_buffer_;           //!< reusable buffer in which to assemble the record header before writing to file
     mutable Buffer   record_buffer_;           //!< reusable buffer in which to assemble the record data before writing to file
@@ -260,12 +251,12 @@ namespace rosbag {
 
 
 template<typename T>
-std::string Bag::toHeaderString(T const* field) const {
+std::string BagInfo::toHeaderString(T const* field) const {
     return std::string((char*) field, sizeof(T));
 }
 
 template<typename T>
-bool Bag::readField(ros::M_string const& fields, std::string const& field_name, bool required, T* data) const {
+bool BagInfo::readField(ros::M_string const& fields, std::string const& field_name, bool required, T* data) const {
     ros::M_string::const_iterator i = checkField(fields, field_name, sizeof(T), sizeof(T), required);
     if (i == fields.end())
     	return false;
@@ -274,7 +265,7 @@ bool Bag::readField(ros::M_string const& fields, std::string const& field_name, 
 }
 
 template<typename Stream>
-void Bag::readMessageDataIntoStream(IndexEntry const& index_entry, Stream& stream) const {
+void BagInfo::readMessageDataIntoStream(IndexEntry const& index_entry, Stream& stream) const {
     ros::Header header;
     uint32_t data_size;
     uint32_t bytes_read;
@@ -302,7 +293,7 @@ void Bag::readMessageDataIntoStream(IndexEntry const& index_entry, Stream& strea
 }
 
 template<class T>
-boost::shared_ptr<T> Bag::instantiateBuffer(IndexEntry const& index_entry) const {
+boost::shared_ptr<T> BagInfo::instantiateBuffer(IndexEntry const& index_entry) const {
     switch (version_)
     {
     case 200:

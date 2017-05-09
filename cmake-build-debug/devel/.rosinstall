@@ -1,2 +1,0 @@
-- setup-file:
-    local-name: /home/olga/ros_comm/tools/rosbag/src/catkin_ws/src/mypakcage/cmake-build-debug/devel/setup.sh
