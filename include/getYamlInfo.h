@@ -6,9 +6,9 @@
 #define MYPAKCAGE_GETYAMLINFO_H
 
 
-#include "RosbagInfo.h"
 
-YAML::Emitter rosbag::getYamlInfo(const std::string& filename, const std::string& key);
+
+
 
 
 

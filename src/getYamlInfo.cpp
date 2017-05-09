@@ -2,7 +2,7 @@
 // Created by olga on 08.05.17.
 //
 
-#include "getYamlInfo.h"
+#include "RosbagInfo.h"
 
 namespace rosbag{
     YAML::Emitter getYamlInfo(const std::string& filename, const std::string& key) {
@@ -12,7 +12,7 @@ namespace rosbag{
             info << filename;
         }
         if(key == "size"){
-            rosbag::Bag bag(filename, READ_VERSION);
+            BagInfo bag(filename, READ_VERSION);
             uint64_t offset = bag.file_.getOffset();
             bag.seek(0, std::ios::end);
             bag.file_size_ = bag.file_.getOffset();
@@ -20,7 +20,7 @@ namespace rosbag{
             info << bag.file_.getOffset();
         }
         if(key == "version"){
-            rosbag::Bag bag(filename, READ_VERSION);
+            BagInfo bag(filename, READ_VERSION);
             info << bag.getMajorVersion();
             info << ".";
             info << bag.getMinorVersion();

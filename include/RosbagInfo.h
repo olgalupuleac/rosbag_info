@@ -106,6 +106,7 @@ public:
     ~BagInfo();
 
 
+
     //! Close the bag file
     void close();
 

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "ctime"
 #include "getYamlInfo.h"
+#include "RosbagInfo.h"
 
 void get_time_difference(clock_t& begin){
     std::cout << float(clock() - begin) /CLOCKS_PER_SEC << "\n";
