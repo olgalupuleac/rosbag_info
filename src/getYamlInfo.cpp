@@ -2,20 +2,16 @@
 // Created by olga on 08.05.17.
 //
 #include <iostream>
+#include <sstream>
 #include "getYamlInfo.h"
 
 using std::string;
 using ros::Time;
 using ros::Duration;
+using std::stringstream;
 
 namespace rosbag{
 
-    uint32_t printable_nsec(uint64_t nsec){
-        nsec %= (uint32_t)1e9;
-        while(nsec < (uint32_t)1e9)
-            nsec *= 10;
-        return nsec;
-    }
 
     void printYamlInfo(const string filename, const string key){
         YAML::Emitter info;
@@ -25,7 +21,8 @@ namespace rosbag{
         }
         if(key == "version"){
             BagInfo bag(filename, READ_VERSION);
-            info << bag.getMajorVersion() << "." << bag.getMinorVersion();
+            info << std::to_string(bag.getMajorVersion()) + "."
+                    + std::to_string(bag.getMinorVersion());
         }
         if(key == "size"){
             BagInfo bag(filename, READ_VERSION);
@@ -33,18 +30,21 @@ namespace rosbag{
         }
         if(key == "start"){
             BagInfo bag(filename);
-            Time time = bag.getStartTime();
-            info << time.sec << "." << printable_nsec(time.nsec) ;
+            stringstream ss;
+            ss  << bag.getStartTime();
+            info << ss.str();
         }
         if(key == "end"){
             BagInfo bag(filename);
-            Time time = bag.getEndTime();
-            info << time.sec << "." << printable_nsec(time.nsec) ;
+            stringstream ss;
+            ss  << bag.getEndTime();
+            info << ss.str();
         }
         if(key == "duration"){
             BagInfo bag(filename);
-            Duration time = bag.getEndTime() - bag.getStartTime();
-            info << time.sec << "." << printable_nsec(time.nsec) ;
+            stringstream ss;
+            ss  << bag.getEndTime() - bag.getStartTime();
+            info << ss.str();
         }
         if(key == "indexed"){
             BagInfo bag(filename);
@@ -102,7 +102,7 @@ namespace rosbag{
             }
             info << YAML::EndSeq;
         }
-        std::cout << info.c_str();
+        std::cout << info.c_str() << std::endl;
     }
 }
 

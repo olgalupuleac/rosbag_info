@@ -26,6 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #include "RosbagInfo.h"
+#include <iostream>
 #include <sstream>
 #include "rosbag/message_instance.h"
 #include "rosbag/query.h"
@@ -83,6 +84,7 @@ namespace rosbag {
     }
 
     BagInfo::~BagInfo() {
+        //std::cerr << chunks_.size() << "\n";
         close();
     }
 
@@ -172,7 +174,7 @@ namespace rosbag {
 
         if(mode_ == READ_CHUNKS ){
             //read chunks in the order they appear in the file
-            std::sort(chunks_.begin(), chunks_.end(), ChunkInfoComparator());
+            //std::sort(chunks_.begin(), chunks_.end(), ChunkInfoComparator());
             seek(chunk_pos);
             // Read the connection indexes for each chunk
                     foreach(ChunkInfo const& chunk_info, chunks_) {
@@ -512,10 +514,7 @@ namespace rosbag {
                  (unsigned long long) chunk_info.pos, chunk_connection_count,
                  chunk_info.start_time.sec, chunk_info.start_time.nsec,
                  chunk_info.end_time.sec, chunk_info.end_time.nsec);
-        /*if(chunk_info.start_time < start_time_)
-            start_time_ = chunk_info.start_time;
-        if(chunk_info.end_time > end_time_)
-            end_time_ = chunk_info.end_time;*/
+
 
         // Read the topic count entries
         for (uint32_t i = 0; i < chunk_connection_count; i ++) {
@@ -600,10 +599,6 @@ namespace rosbag {
         return true;
     }
 
-   /* std::string BagInfo::toHeaderString(Time const* field) const {
-        uint64_t packed_time = (((uint64_t) field->nsec) << 32) + field->sec;
-        return toHeaderString(&packed_time);
-    }*/
 
 
 // Low-level I/O
@@ -662,10 +657,10 @@ namespace rosbag {
                 if (it != chunk.connection_counts.end())
                     msg_count += it->second;
             }
-            topics[std::make_pair(connection_info->topic,
-                    connection_info->datatype )].first += msg_count;
-            topics[std::make_pair(connection_info->topic,
-                                  connection_info->datatype )].second++;
+            auto& topic_in_map = topics[std::make_pair(connection_info->topic,
+                                                       connection_info->datatype )];
+            topic_in_map.first += msg_count;
+            topic_in_map.second++;
         }
         return topics;
         //todo calculate frequency
