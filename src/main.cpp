@@ -1,52 +1,17 @@
 #include <iostream>
 #include "ctime"
 #include "getYamlInfo.h"
-#include "RosbagInfo.h"
 
 void get_time_difference(clock_t& begin){
-    std::cout << float(clock() - begin) /CLOCKS_PER_SEC << "\n";
+    std::cout << "\n" << float(clock() - begin) /CLOCKS_PER_SEC << "\n";
     begin = clock();
 }
 
 
 int main(){
     clock_t begin_time = clock();
-    rosbag::BagInfo bag1("/home/olga/Загрузки/1gb.bag", rosbag::READ_CHUNKS);
-   /* bag1.printInfo(std::cout, "path");
-    std::cout << "\n";
+    rosbag::printYamlInfo("/media/olga/Expansion Drive/40gb.bag", "compression");
     get_time_difference(begin_time);
-
-    bag1.printInfo(std::cout, "size");
-    std::cout << "\n";
-    get_time_difference(begin_time);
-
-    bag1.printInfo(std::cout, "version");
-    std::cout << "\n";
-    get_time_difference(begin_time);
-    rosbag::Bag bag("/home/olga/Загрузки/2012-05-03-13-33-14.bag");
-    bag.printInfo(std::cout, "start");
-    std::cout << "\n";
-    get_time_difference(begin_time);
-    bag.printInfo(std::cout, "end");
-    std::cout << "\n";
-    get_time_difference(begin_time);
-    bag.printInfo(std::cout, "duration");
-    std::cout << "\n";
-    get_time_difference(begin_time);
-    bag.printInfo(std::cout, "compression");
-    std::cout << "\n";
-    get_time_difference(begin_time);
-    bag.printInfo(std::cout, "indexed");
-    std::cout << "\n";
-    get_time_difference(begin_time);
-    bag.printInfo(std::cout, "messages");
-    std::cout << "\n";
-    get_time_difference(begin_time);
-    bag.printInfo(std::cout, "topics");
-    std::cout << "\n";
-    get_time_difference(begin_time);
-    bag.printInfo(std::cout, "types");
-    get_time_difference(begin_time);*/
     return 0;
 }
 /*

@@ -58,6 +58,8 @@ using boost::format;
 using boost::shared_ptr;
 using ros::M_string;
 using ros::Time;
+using std::tuple;
+using std::pair;
 
 namespace rosbag {
 
@@ -67,7 +69,6 @@ namespace rosbag {
             compression_(compression::Uncompressed),
             chunk_threshold_(768 * 1024),  // 768KB chunks
             bag_revision_(0),
-            file_size_(0),
             file_header_pos_(0),
             index_data_pos_(0),
             connection_count_(0),
@@ -76,8 +77,6 @@ namespace rosbag {
             curr_chunk_data_pos_(0),
             current_buffer_(0),
             decompressed_chunk_(0),
-            //start_time_(ros::TIME_MAX),
-            //end_time_(ros::TIME_MIN),
             mode_(mode)
     {
         openRead(filename);
@@ -124,14 +123,6 @@ namespace rosbag {
     }
 
 
-    string   BagInfo::getFileName() const { return file_.getFileName(); }
-
-
-    uint32_t BagInfo::getChunkThreshold() const { return chunk_threshold_; }
-
-
-
-    CompressionType BagInfo::getCompression() const { return compression_; }
 
 
 
@@ -160,29 +151,6 @@ namespace rosbag {
     uint32_t BagInfo::getMajorVersion() const { return version_ / 100; }
     uint32_t BagInfo::getMinorVersion() const { return version_ % 100; }
 
-
-
-
-
-/*ConnectionInfo* connection_info = new ConnectionInfo();
-            connection_info->id       = connection_id;
-            connection_info->topic    = topic;
-            connections_[connection_id] = connection_info;
-
-            topic_connection_ids_[topic] = connection_id;
-        }
-        else
-            connection_id = topic_conn_id_iter->second;
-
-        multiset<IndexEntry>& connection_index = connection_indexes_[connection_id];*/
-
-
-
-
-
-
-
-//
 
     void BagInfo::startReadingVersion200() {
         // Read the file header record, which points to the end of the chunks
@@ -294,12 +262,6 @@ namespace rosbag {
         seek(data_size, std::ios::cur);
     }
 
-    uint32_t BagInfo::getChunkOffset() const {
-        if (compression_ == compression::Uncompressed)
-            return file_.getOffset() - curr_chunk_data_pos_;
-        else
-            return file_.getCompressedBytesIn();
-    }
 
 
     void BagInfo::readChunkHeader(ChunkHeader& chunk_header) const {
@@ -521,142 +483,6 @@ namespace rosbag {
         logDebug("Read MSG_DEF: topic=%s md5sum=%s datatype=%s", topic.c_str(), md5sum.c_str(), datatype.c_str());
     }
 
-    void BagInfo::decompressChunk(uint64_t chunk_pos) const {
-        if (curr_chunk_info_.pos == chunk_pos) {
-            current_buffer_ = &outgoing_chunk_buffer_;
-            return;
-        }
-
-        current_buffer_ = &decompress_buffer_;
-
-        if (decompressed_chunk_ == chunk_pos)
-            return;
-
-        // Seek to the start of the chunk
-        seek(chunk_pos);
-
-        // Read the chunk header
-        ChunkHeader chunk_header;
-        readChunkHeader(chunk_header);
-
-        // Read and decompress the chunk.  These assume we are at the right place in the stream already
-        if (chunk_header.compression == COMPRESSION_NONE)
-            decompressRawChunk(chunk_header);
-        else if (chunk_header.compression == COMPRESSION_BZ2)
-            decompressBz2Chunk(chunk_header);
-        else if (chunk_header.compression == COMPRESSION_LZ4)
-            decompressLz4Chunk(chunk_header);
-        else
-            throw BagFormatException("Unknown compression: " + chunk_header.compression);
-
-        decompressed_chunk_ = chunk_pos;
-    }
-
-    void BagInfo::readMessageDataRecord102(uint64_t offset, ros::Header& header) const {
-        logDebug("readMessageDataRecord: offset=%llu", (unsigned long long) offset);
-
-        seek(offset);
-
-        uint32_t data_size;
-        uint8_t op;
-        do {
-            if (!readHeader(header) || !readDataLength(data_size))
-                throw BagFormatException("Error reading header");
-
-            readField(*header.getValues(), OP_FIELD_NAME, true, &op);
-        }
-        while (op == OP_MSG_DEF);
-
-        if (op != OP_MSG_DATA)
-            throw BagFormatException((format("Expected MSG_DATA op, got %d") % op).str());
-
-        record_buffer_.setSize(data_size);
-        file_.read((char*) record_buffer_.getData(), data_size);
-    }
-
-// Reading this into a buffer isn't completely necessary, but we do it anyways for now
-    void BagInfo::decompressRawChunk(ChunkHeader const& chunk_header) const {
-        assert(chunk_header.compression == COMPRESSION_NONE);
-        assert(chunk_header.compressed_size == chunk_header.uncompressed_size);
-
-        logDebug("compressed_size: %d uncompressed_size: %d", chunk_header.compressed_size, chunk_header.uncompressed_size);
-
-        decompress_buffer_.setSize(chunk_header.compressed_size);
-        file_.read((char*) decompress_buffer_.getData(), chunk_header.compressed_size);
-
-        // todo check read was successful
-    }
-
-    void BagInfo::decompressBz2Chunk(ChunkHeader const& chunk_header) const {
-        assert(chunk_header.compression == COMPRESSION_BZ2);
-
-        CompressionType compression = compression::BZ2;
-
-        logDebug("compressed_size: %d uncompressed_size: %d", chunk_header.compressed_size, chunk_header.uncompressed_size);
-
-        chunk_buffer_.setSize(chunk_header.compressed_size);
-        file_.read((char*) chunk_buffer_.getData(), chunk_header.compressed_size);
-
-        decompress_buffer_.setSize(chunk_header.uncompressed_size);
-        file_.decompress(compression, decompress_buffer_.getData(), decompress_buffer_.getSize(), chunk_buffer_.getData(), chunk_buffer_.getSize());
-
-        // todo check read was successful
-    }
-
-    void BagInfo::decompressLz4Chunk(ChunkHeader const& chunk_header) const {
-        assert(chunk_header.compression == COMPRESSION_LZ4);
-
-        CompressionType compression = compression::LZ4;
-
-        logDebug("lz4 compressed_size: %d uncompressed_size: %d",
-                 chunk_header.compressed_size, chunk_header.uncompressed_size);
-
-        chunk_buffer_.setSize(chunk_header.compressed_size);
-        file_.read((char*) chunk_buffer_.getData(), chunk_header.compressed_size);
-
-        decompress_buffer_.setSize(chunk_header.uncompressed_size);
-        file_.decompress(compression, decompress_buffer_.getData(), decompress_buffer_.getSize(), chunk_buffer_.getData(), chunk_buffer_.getSize());
-
-        // todo check read was successful
-    }
-
-    ros::Header BagInfo::readMessageDataHeader(IndexEntry const& index_entry) {
-        ros::Header header;
-        uint32_t data_size;
-        uint32_t bytes_read;
-        switch (version_)
-        {
-            case 200:
-                decompressChunk(index_entry.chunk_pos);
-                readMessageDataHeaderFromBuffer(*current_buffer_, index_entry.offset, header, data_size, bytes_read);
-                return header;
-            case 102:
-                readMessageDataRecord102(index_entry.chunk_pos, header);
-                return header;
-            default:
-                throw BagFormatException((format("Unhandled version: %1%") % version_).str());
-        }
-    }
-
-// NOTE: this loads the header, which is unnecessary
-    uint32_t BagInfo::readMessageDataSize(IndexEntry const& index_entry) const {
-        ros::Header header;
-        uint32_t data_size;
-        uint32_t bytes_read;
-        switch (version_)
-        {
-            case 200:
-                decompressChunk(index_entry.chunk_pos);
-                readMessageDataHeaderFromBuffer(*current_buffer_, index_entry.offset, header, data_size, bytes_read);
-                return data_size;
-            case 102:
-                readMessageDataRecord102(index_entry.chunk_pos, header);
-                return record_buffer_.getSize();
-            default:
-                throw BagFormatException((format("Unhandled version: %1%") % version_).str());
-        }
-    }
-
 
     void BagInfo::readChunkInfoRecord() {
         // Read a CHUNK_INFO header
@@ -713,53 +539,6 @@ namespace rosbag {
         return op == reqOp;
     }
 
-
-//! \todo clean this up
-    void BagInfo::readHeaderFromBuffer(Buffer& buffer, uint32_t offset, ros::Header& header, uint32_t& data_size, uint32_t& bytes_read) const {
-        assert(buffer.getSize() > 8);
-
-        uint8_t* start = (uint8_t*) buffer.getData() + offset;
-
-        uint8_t* ptr = start;
-
-        // Read the header length
-        uint32_t header_len;
-        memcpy(&header_len, ptr, 4);
-        ptr += 4;
-
-        // Parse the header
-        string error_msg;
-        bool parsed = header.parse(ptr, header_len, error_msg);
-        if (!parsed)
-            throw BagFormatException("Error parsing header");
-        ptr += header_len;
-
-        // Read the data size
-        memcpy(&data_size, ptr, 4);
-        ptr += 4;
-
-        bytes_read = ptr - start;
-    }
-
-    void BagInfo::readMessageDataHeaderFromBuffer(Buffer& buffer, uint32_t offset, ros::Header& header, uint32_t& data_size, uint32_t& total_bytes_read) const {
-        (void)buffer;
-        total_bytes_read = 0;
-        uint8_t op = 0xFF;
-        do {
-            logDebug("reading header from buffer: offset=%d", offset);
-            uint32_t bytes_read;
-            readHeaderFromBuffer(*current_buffer_, offset, header, data_size, bytes_read);
-
-            offset += bytes_read;
-            total_bytes_read += bytes_read;
-
-            readField(*header.getValues(), OP_FIELD_NAME, true, &op);
-        }
-        while (op == OP_MSG_DEF || op == OP_CONNECTION);
-
-        if (op != OP_MSG_DATA)
-            throw BagFormatException("Expected MSG_DATA op not found");
-    }
 
     bool BagInfo::readHeader(ros::Header& header) const {
         // Read the header length
@@ -821,10 +600,10 @@ namespace rosbag {
         return true;
     }
 
-    std::string BagInfo::toHeaderString(Time const* field) const {
+   /* std::string BagInfo::toHeaderString(Time const* field) const {
         uint64_t packed_time = (((uint64_t) field->nsec) << 32) + field->sec;
         return toHeaderString(&packed_time);
-    }
+    }*/
 
 
 // Low-level I/O
@@ -833,6 +612,117 @@ namespace rosbag {
 
     void BagInfo::read(char* b, std::streamsize n) const  { file_.read(b, n);             }
     void BagInfo::seek(uint64_t pos, int origin) const    { file_.seek(pos, origin);      }
+
+
+    uint64_t BagInfo::getSize() const {
+        uint64_t offset = file_.getOffset();
+        seek(0, std::ios::end);
+        uint64_t file_size = file_.getOffset();
+        seek(offset);
+        return file_size;
+    }
+
+
+    Time BagInfo::getStartTime() const {
+        Time start_time = ros::TIME_MAX;
+        if (chunks_.size()) {
+            start_time = chunks_[0].start_time;
+        } else
+            for (const auto &index : connection_indexes_) {
+                Time time = (*index.second.begin()).time;
+                if (time < start_time)
+                    start_time = time;
+            }
+        return start_time;
+    }
+
+
+    Time BagInfo::getEndTime() const {
+        Time end_time = ros::TIME_MIN;
+        if (chunks_.size()) {
+            end_time = chunks_.back().end_time;
+        } else
+            for (const auto &index : connection_indexes_) {
+                auto last = --index.second.end();
+                Time time = (*last).time;
+                if (time < end_time)
+                    end_time = time;
+            }
+        return end_time;
+    }
+
+
+    map<pair<string, string>, pair<uint64_t, uint32_t> >BagInfo::getTopics() const {
+        map<pair<string, string>, pair<uint64_t, uint32_t> > topics;
+        for (const auto &connection : connections_) {
+            ConnectionInfo *connection_info = connection.second;
+            uint64_t msg_count = 0;
+            for (const auto &chunk : chunks_) {
+                auto it = chunk.connection_counts.find(connection_info->id);
+                if (it != chunk.connection_counts.end())
+                    msg_count += it->second;
+            }
+            topics[std::make_pair(connection_info->topic,
+                    connection_info->datatype )].first += msg_count;
+            topics[std::make_pair(connection_info->topic,
+                                  connection_info->datatype )].second++;
+        }
+        return topics;
+        //todo calculate frequency
+    }
+
+
+    uint64_t BagInfo::getMessagesNumber() const {
+        uint64_t num_msg = 0;
+        if(chunks_.size())
+            for(const auto& chunk : chunks_)
+                for(const auto& count : chunk.connection_counts)
+                    num_msg += count.second;
+        else
+            for(const auto& index : connection_indexes_)
+                num_msg += index.second.size();
+        return num_msg;
+    }
+
+
+    bool BagInfo::isIndexed() const {
+        return chunks_.size() || connection_indexes_.size();
+    }
+
+
+    tuple<string, uint32_t, uint32_t> BagInfo::getCompression() const {
+        uint32_t main_compression_count = 0;
+        string main_compression_type;
+        uint32_t compressed = 0;
+        uint32_t uncompressed = 0;
+        for(const auto& compression_type : compression_type_count_){
+            if(compression_type.second > main_compression_count){
+                main_compression_count = compression_type.second;
+                main_compression_type = compression_type.first;
+            }
+            if(compression_type.first == COMPRESSION_NONE)
+                uncompressed += compression_type.second;
+            else
+                compressed += compression_type.second;
+        }
+        return std::make_tuple(main_compression_type, uncompressed, compressed);
+    }
+
+
+    multiset<pair<string, string> > BagInfo::getTypes() const {
+        multiset<pair<string, string> > types;
+        for(const auto& connection : connections_) {
+            ConnectionInfo *connection_info = connection.second;
+            types.insert({connection_info->datatype,
+                          connection_info->md5sum});
+        }
+        return types;
+    }
+
+
+
+
+
 
 
 

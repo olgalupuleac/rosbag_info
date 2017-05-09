@@ -6,7 +6,12 @@
 #define MYPAKCAGE_GETYAMLINFO_H
 
 
+#include "RosbagInfo.h"
+#include "yaml-cpp/yaml.h"
 
+namespace rosbag{
+    void printYamlInfo(const std::string filename, const std::string key);
+}
 
 
 
