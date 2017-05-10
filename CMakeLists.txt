@@ -181,8 +181,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -std=c++11 -Iinclude")
 include_directories(./include/)
 
 set(SOURCE_FILES src/main.cpp src/CommandLineParser.cpp src/RosbagInfo.cpp include/RosbagInfo.h src/getYamlInfo.cpp include/getYamlInfo.h)
-add_executable(RosbagInfo ${SOURCE_FILES})
-target_link_libraries(RosbagInfo ${catkin_LIBRARIES} yaml-cpp)
+add_executable(rosbag-info ${SOURCE_FILES})
+target_link_libraries(rosbag-info ${catkin_LIBRARIES} yaml-cpp)
 
 
 
