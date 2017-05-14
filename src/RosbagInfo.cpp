@@ -26,24 +26,20 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #include "RosbagInfo.h"
-#include <iostream>
-#include <sstream>
-#include "rosbag/message_instance.h"
-#include "rosbag/query.h"
-#include "rosbag/view.h"
+
+
 
 #if defined(_MSC_VER)
 #include <stdint.h> // only on v2010 and later -> is this enough for msvc and linux?
 #else
 #include <inttypes.h>
 #endif
-#include <signal.h>
-#include <assert.h>
-#include <iomanip>
 
 #include <boost/foreach.hpp>
 
 #include <algorithm>
+#include <unordered_map>
+#include <math.h>
 
 #include "console_bridge/console.h"
 
@@ -61,6 +57,9 @@ using ros::M_string;
 using ros::Time;
 using std::tuple;
 using std::pair;
+using std::unordered_map;
+using std::set;
+using std::size_t;
 
 namespace rosbag {
 
@@ -84,7 +83,6 @@ namespace rosbag {
     }
 
     BagInfo::~BagInfo() {
-        //std::cerr << chunks_.size() << "\n";
         close();
     }
 
@@ -172,9 +170,7 @@ namespace rosbag {
         for (uint32_t i = 0; i < chunk_count_; i++)
             readChunkInfoRecord();
 
-        if(mode_ == READ_CHUNKS ){
-            //read chunks in the order they appear in the file
-            //std::sort(chunks_.begin(), chunks_.end(), ChunkInfoComparator());
+        if(mode_ == READ_CHUNKS  || mode_ == READ_ALL){
             seek(chunk_pos);
             // Read the connection indexes for each chunk
                     foreach(ChunkInfo const& chunk_info, chunks_) {
@@ -190,6 +186,7 @@ namespace rosbag {
                             // Read the index records after the chunk
                             for (unsigned int i = 0; i < chunk_info.connection_counts.size(); i++)
                                 readConnectionIndexRecord200();
+                            //todo if mode_ == READ_CHUNKS skip connection index record
                         }
 
             // At this point we don't have a curr_chunk_info anymore so we reset it
@@ -647,24 +644,69 @@ namespace rosbag {
     }
 
 
-    map<pair<string, string>, pair<uint64_t, uint32_t> >BagInfo::getTopics() const {
-        map<pair<string, string>, pair<uint64_t, uint32_t> > topics;
+    map<string, TopicInfo >BagInfo::getTopics(bool freq) const {
+        map<string, TopicInfo > topics;
+        unordered_map<std::string, vector<Time> > time_entries;
         for (const auto &connection : connections_) {
             ConnectionInfo *connection_info = connection.second;
             uint64_t msg_count = 0;
+
             for (const auto &chunk : chunks_) {
                 auto it = chunk.connection_counts.find(connection_info->id);
                 if (it != chunk.connection_counts.end())
                     msg_count += it->second;
             }
-            auto& topic_in_map = topics[std::make_pair(connection_info->topic,
-                                                       connection_info->datatype )];
-            topic_in_map.first += msg_count;
-            topic_in_map.second++;
+            auto& topic_in_map = topics[connection_info->topic];
+            topic_in_map.msg_num += msg_count;
+            topic_in_map.connections++;
+            if(topic_in_map.datatype == "NONE")
+                topic_in_map.datatype = connection_info->datatype;
+            if(freq){
+                auto& topic_time_entries = time_entries[connection_info->topic];
+                auto it = connection_indexes_.find(connection_info->id);
+                if(it != connection_indexes_.end()){
+                    for(const IndexEntry& index : (*it).second)
+                        topic_time_entries.push_back(index.time);
+                }
+            }
+
+        }
+        if(freq){
+            for(auto& topic_time_entries : time_entries){
+
+                std::sort(topic_time_entries.second.begin(), topic_time_entries.second.end());
+                vector<ros::Duration> topic_periods;
+                for(size_t i = 1; i < topic_time_entries.second.size(); i++){
+                    topic_periods.push_back(topic_time_entries.second[i] - topic_time_entries.second[i - 1]);
+                }
+                std::sort(topic_periods.begin(), topic_periods.end());
+                if(topic_periods.size() % 2 == 1){
+                    /*auto median_it = topic_periods.begin() +
+                                  (topic_periods.end() - topic_periods.begin()) / 2 ; // -1 ?
+                    std::nth_element(topic_periods.begin(), topic_periods.end(), median_it);*/
+
+
+                    double median = (topic_periods[topic_periods.size() / 2]).sec
+                                    + (topic_periods[topic_periods.size() / 2]).nsec * 1e-9;
+                    if(median > 0.0){
+                        topics[topic_time_entries.first].frequency = round(1e4 / median) / 1e4;
+                    }
+                }
+                else
+                    if(! topic_periods.empty()){
+                        ros::Duration lower = topic_periods[topic_periods.size() / 2 - 1];
+                        ros::Duration upper = topic_periods[topic_periods.size() / 2];
+                        double median = (double)(lower.sec + upper.sec) / 2 +
+                                1e-9 * (lower.nsec + upper.nsec) / 2;
+                        if(median > 0.0){
+                            topics[topic_time_entries.first].frequency = round(1e4 / median) / 1e4;
+                        }
+                    }
+            }
         }
         return topics;
-        //todo calculate frequency
     }
+
 
 
     uint64_t BagInfo::getMessagesNumber() const {
@@ -704,8 +746,8 @@ namespace rosbag {
     }
 
 
-    multiset<pair<string, string> > BagInfo::getTypes() const {
-        multiset<pair<string, string> > types;
+    set<pair<string, string> > BagInfo::getTypes() const {
+        set<pair<string, string> > types;
         for(const auto& connection : connections_) {
             ConnectionInfo *connection_info = connection.second;
             types.insert({connection_info->datatype,

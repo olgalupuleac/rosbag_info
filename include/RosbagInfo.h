@@ -76,15 +76,17 @@ namespace rosbag {
     enum ReadingMode {
         READ_CHUNK_INFO,
         READ_CHUNKS,
-        READ_VERSION
+        READ_VERSION,
+        READ_ALL
     };
 
 
-    struct ChunkInfoComparator{
-        bool operator()(const ChunkInfo& lhs,
-                        const ChunkInfo& rhs){
-            return lhs.pos < rhs.pos;
-        }
+    struct TopicInfo {
+        std::string datatype;
+        uint32_t connections;
+        uint32_t msg_num;
+        double frequency;
+        TopicInfo():datatype("NONE"), connections(0), msg_num(0), frequency(0){}
     };
 
 
@@ -121,8 +123,8 @@ public:
 
 
 
-    std::map<std::pair<std::string, std::string>, std::pair<uint64_t, uint32_t> > getTopics() const;
-    std::multiset<std::pair<std::string, std::string> > getTypes() const;
+    std::map<std::string, TopicInfo > getTopics(bool freq) const;
+    std::set<std::pair<std::string, std::string> > getTypes() const;
     uint64_t        getMessagesNumber() const;
 
 

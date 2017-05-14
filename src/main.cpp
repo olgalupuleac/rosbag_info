@@ -6,28 +6,32 @@
 
 using std::pair;
 using std::string;
+using std::unordered_set;
 
 struct Args{
     bool y = false;
-    std::string key;
-    std::string filename;
+    bool freq = false;
+    string key;
+   unordered_set<string> files;
 };
 
 Args parse_arguments(int argc, char* argv[]) {
-    assert(argc == 5);
     Args res;
     int i = 1;
-    while (i < 5) {
-        if (std::string(argv[i]) == "y")
+    while (i < argc) {
+        if (std::string(argv[i]) == "-y")
             res.y = true;
         else
             if (std::string(argv[i]) == "-k" || std::string(argv[i]) == "--key")
                  res.key = std::string(argv[++i]);
             else
-                res.filename = argv[i];
+                if(std::string(argv[i]) == "--freq")
+                    res.freq = true;
+                else
+                    res.files.insert(string(argv[i]));
         i++;
     }
-    assert(res.y || res.key != "" || res.filename != "");
+    assert(res.y || res.key != "" || res.files.size());
     return res;
 }
 
@@ -36,6 +40,6 @@ Args parse_arguments(int argc, char* argv[]) {
 
 int main(int argc, char* argv[]){
     Args args = parse_arguments(argc, argv);
-    rosbag::printYamlInfo(args.filename, args.key);
+    rosbag::printYamlInfo(args.files, args.key, args.freq);
     return 0;
 }

@@ -10,7 +10,8 @@
 #include "yaml-cpp/yaml.h"
 
 namespace rosbag{
-    void printYamlInfo(const std::string filename, const std::string key);
+    void printYamlInfo(const std::unordered_set<std::string>& files,
+                       const std::string& key, bool freq = false);
 }
 
 
