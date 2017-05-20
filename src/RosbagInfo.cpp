@@ -170,23 +170,27 @@ namespace rosbag {
         for (uint32_t i = 0; i < chunk_count_; i++)
             readChunkInfoRecord();
 
-        if(mode_ == READ_CHUNKS  || mode_ == READ_ALL){
+        if(mode_ == READ_ALL || mode_ == READ_CHUNKS){
             seek(chunk_pos);
             // Read the connection indexes for each chunk
                     foreach(ChunkInfo const& chunk_info, chunks_) {
                             curr_chunk_info_ = chunk_info;
 
-                            //seek(curr_chunk_info_.pos);
+                            //if the connection indexes records haven't been read
+                            if(mode_ == READ_CHUNKS)
+                                seek(curr_chunk_info_.pos);
 
                             // Skip over the chunk data
                             ChunkHeader chunk_header;
                             readChunkHeader(chunk_header);
                             seek(chunk_header.compressed_size, std::ios::cur);
 
-                            // Read the index records after the chunk
-                            for (unsigned int i = 0; i < chunk_info.connection_counts.size(); i++)
-                                readConnectionIndexRecord200();
-                            //todo if mode_ == READ_CHUNKS skip connection index record
+                            // Read the index records after the chunk or skip them
+                            if(mode_ == READ_ALL){
+                                for (unsigned int i = 0; i < chunk_info.connection_counts.size(); i++)
+                                    readConnectionIndexRecord200();
+                            }
+
                         }
 
             // At this point we don't have a curr_chunk_info anymore so we reset it
@@ -653,18 +657,12 @@ namespace rosbag {
 
 
             result = (topic_periods[topic_periods.size() / 2]);
-            std::cout << "median ";
-            std::cout << std::fixed << std::setprecision(30);
-            std::cout << result << "\n";
         }
         else
         if(! topic_periods.empty()){
             double lower = topic_periods[topic_periods.size() / 2 - 1];
             double upper = topic_periods[topic_periods.size() / 2];
             result = (lower + upper) / 2;
-            std::cout << "median ";
-            std::cout << std::fixed << std::setprecision(40);
-            std::cout << result << "\n";
         }
         return result;
     }
@@ -704,27 +702,13 @@ namespace rosbag {
             for (auto &topic_time_entries : time_entries) {
 
                 std::sort(topic_time_entries.second.begin(), topic_time_entries.second.end());
-                // vector<ros::Duration> topic_periods;
-                //std::cerr << "\n";
-                //if(topic_time_entries.first == "/base_odometry/odom")
-                     //exit(0);
-                /*for(auto time : topic_time_entries.second){
-                    std::cerr << std::fixed << std::setprecision(100);
-                    std::cerr << time << "\n";
-                }*/
                 vector<double> topic_periods;
                 for (size_t i = 1; i < topic_time_entries.second.size(); i++) {
                     topic_periods.push_back(topic_time_entries.second[i] - topic_time_entries.second[i - 1]);
                 }
-                for(auto time : topic_periods){
-                    std::cerr << std::fixed << std::setprecision(100);
-                    std::cerr << time << "\n";
-                    if(time > 4)
-                        std::cout << "got " << topic_time_entries.first << "\n";
-                }
                 double median_val = median(topic_periods);
                 if (median_val > 0.0)
-                    topics[topic_time_entries.first].frequency = 1 / median_val;
+                    topics[topic_time_entries.first].frequency = round(1e4 / median_val) / 1e4;
             }
         }
 
