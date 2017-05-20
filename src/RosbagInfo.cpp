@@ -643,10 +643,39 @@ namespace rosbag {
         return end_time;
     }
 
+    double median(vector<double>& topic_periods){
+        double result;
+        std::sort(topic_periods.begin(), topic_periods.end());
+        if(topic_periods.size() % 2 == 1){
+            /*auto median_it = topic_periods.begin() +
+                          (topic_periods.end() - topic_periods.begin()) / 2 ; // -1 ?
+            std::nth_element(topic_periods.begin(), topic_periods.end(), median_it);*/
+
+
+            result = (topic_periods[topic_periods.size() / 2]);
+            std::cout << "median ";
+            std::cout << std::fixed << std::setprecision(30);
+            std::cout << result << "\n";
+        }
+        else
+        if(! topic_periods.empty()){
+            double lower = topic_periods[topic_periods.size() / 2 - 1];
+            double upper = topic_periods[topic_periods.size() / 2];
+            result = (lower + upper) / 2;
+            std::cout << "median ";
+            std::cout << std::fixed << std::setprecision(40);
+            std::cout << result << "\n";
+        }
+        return result;
+    }
+
+    double to_sec(ros::Time time){
+        return time.sec + time.nsec * 1e-9;
+    }
 
     map<string, TopicInfo >BagInfo::getTopics(bool freq) const {
         map<string, TopicInfo > topics;
-        unordered_map<std::string, vector<Time> > time_entries;
+        unordered_map<std::string, vector<double> > time_entries;
         for (const auto &connection : connections_) {
             ConnectionInfo *connection_info = connection.second;
             uint64_t msg_count = 0;
@@ -666,44 +695,39 @@ namespace rosbag {
                 auto it = connection_indexes_.find(connection_info->id);
                 if(it != connection_indexes_.end()){
                     for(const IndexEntry& index : (*it).second)
-                        topic_time_entries.push_back(index.time);
+                        topic_time_entries.push_back(to_sec(index.time));
                 }
             }
 
         }
-        if(freq){
-            for(auto& topic_time_entries : time_entries){
+        if(freq) {
+            for (auto &topic_time_entries : time_entries) {
 
                 std::sort(topic_time_entries.second.begin(), topic_time_entries.second.end());
-                vector<ros::Duration> topic_periods;
-                for(size_t i = 1; i < topic_time_entries.second.size(); i++){
+                // vector<ros::Duration> topic_periods;
+                //std::cerr << "\n";
+                //if(topic_time_entries.first == "/base_odometry/odom")
+                     //exit(0);
+                /*for(auto time : topic_time_entries.second){
+                    std::cerr << std::fixed << std::setprecision(100);
+                    std::cerr << time << "\n";
+                }*/
+                vector<double> topic_periods;
+                for (size_t i = 1; i < topic_time_entries.second.size(); i++) {
                     topic_periods.push_back(topic_time_entries.second[i] - topic_time_entries.second[i - 1]);
                 }
-                std::sort(topic_periods.begin(), topic_periods.end());
-                if(topic_periods.size() % 2 == 1){
-                    /*auto median_it = topic_periods.begin() +
-                                  (topic_periods.end() - topic_periods.begin()) / 2 ; // -1 ?
-                    std::nth_element(topic_periods.begin(), topic_periods.end(), median_it);*/
-
-
-                    double median = (topic_periods[topic_periods.size() / 2]).sec
-                                    + (topic_periods[topic_periods.size() / 2]).nsec * 1e-9;
-                    if(median > 0.0){
-                        topics[topic_time_entries.first].frequency = round(1e4 / median) / 1e4;
-                    }
+                for(auto time : topic_periods){
+                    std::cerr << std::fixed << std::setprecision(100);
+                    std::cerr << time << "\n";
+                    if(time > 4)
+                        std::cout << "got " << topic_time_entries.first << "\n";
                 }
-                else
-                    if(! topic_periods.empty()){
-                        ros::Duration lower = topic_periods[topic_periods.size() / 2 - 1];
-                        ros::Duration upper = topic_periods[topic_periods.size() / 2];
-                        double median = (double)(lower.sec + upper.sec) / 2 +
-                                1e-9 * (lower.nsec + upper.nsec) / 2;
-                        if(median > 0.0){
-                            topics[topic_time_entries.first].frequency = round(1e4 / median) / 1e4;
-                        }
-                    }
+                double median_val = median(topic_periods);
+                if (median_val > 0.0)
+                    topics[topic_time_entries.first].frequency = 1 / median_val;
             }
         }
+
         return topics;
     }
 

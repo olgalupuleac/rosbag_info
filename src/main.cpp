@@ -40,6 +40,7 @@ Args parse_arguments(int argc, char* argv[]) {
 
 int main(int argc, char* argv[]){
     Args args = parse_arguments(argc, argv);
+    freopen("/home/olga/out.txt", "w", stderr);
     rosbag::printYamlInfo(args.files, args.key, args.freq);
     return 0;
 }
