@@ -13,8 +13,7 @@ If rosbag info is launched with keys -y -k, it executes my code by calling execu
 
 ## Build
 
-To build the executable file you need to open directory *ros_comm/tools/rosbag/rosbag_info_pkg*, call *cmake CMakeLists.txt* and *make*.
-The executable file will be put in */devel/lib/rosbag_info_pkg*.
+To build this project you need to create catkin_ws, following this instruction http://wiki.ros.org/catkin/Tutorials/create_a_workspace, clone or download this repository and call cmake and make. The executable file will be put on directory devel/lib/rosbag-info. Note that you may run it only on one file with option -y and with only one specified key.
 
 
 ## Tests
